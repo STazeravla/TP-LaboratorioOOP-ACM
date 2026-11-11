@@ -7,19 +7,22 @@ public class BTrazadoFormal extends Barrio {
 	private int cantidadDeEdificiosHorizontales;
 	private int porAsfaltoEnCalles;
 	
-	ArrayList<Persona> personas = new ArrayList<>();
 	
 	
 	
-	public BTrazadoFormal(int cantidadDeEdificiosHorizontales, int porAsfaltoEnCalles, ArrayList<Persona> personas) {
-		super();
+	public BTrazadoFormal(String nombreBarrio, int superficie, int cantidadDeEdificiosHorizontales, int porAsfaltoEnCalles, ArrayList<Persona> personas) {
+		super(nombreBarrio, superficie);
 		this.cantidadDeEdificiosHorizontales = cantidadDeEdificiosHorizontales;
 		this.porAsfaltoEnCalles = porAsfaltoEnCalles;
-		this.personas = personas;
+
 	}
 
+	public void agregarPersona(Persona p) {
+		getPersonas().add(p);
+	}
+	
 	public int calcularDensidad() {
-		return personas.size() / getCantidadDeEdificiosHorizontales();
+		return getPersonas().size() / getCantidadDeEdificiosHorizontales();
 	}
 	
 	public boolean tieneCriticidadHabitacional() {

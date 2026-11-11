@@ -1,10 +1,14 @@
 package TP_Fatal_Final.modelo;
 
+import java.util.ArrayList;
+
 public class Comuna {
 	
 	private int numeroComuna;
 	private String nombreDeSede;
 	private String juntaComunal;
+	
+	ArrayList<Barrio> barrios = new ArrayList<>();
 	
 	public Comuna(int numeroComuna, String nombreDeSede, String juntaComunal){
 		super();
@@ -13,9 +17,18 @@ public class Comuna {
 		this.juntaComunal = juntaComunal;
 	}
 	
+	public void agregarBarrio(Barrio p) {
+		barrios.add(p);
+	}
 	
-	public atencionPrioritaria() {
-		
+	public boolean atencionPrioritaria() {
+		int i = 0;
+		for (Barrio barrio : barrios) {
+			if(barrio.tieneCriticidadHabitacional()) {
+				i++;
+			}
+		}
+		return i >= barrios.size() / 2;
 	}
 
 	public int getNumeroComuna() {

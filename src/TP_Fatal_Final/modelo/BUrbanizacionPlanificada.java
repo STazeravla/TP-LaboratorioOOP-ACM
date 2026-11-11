@@ -7,19 +7,21 @@ public class BUrbanizacionPlanificada extends Barrio {
 		private int numeroDeLey;
 		private boolean tieneAguaPotable;
 		
-		ArrayList<Persona> personas = new ArrayList<>();
 		
 		
 		
-		public BUrbanizacionPlanificada(int numeroDeLey, boolean tieneAguaPotable, ArrayList<Persona> personas) {
-			super();
+		public BUrbanizacionPlanificada(String nombreBarrio, int superficie, int numeroDeLey, boolean tieneAguaPotable, ArrayList<Persona> personas) {
+			super(nombreBarrio, superficie);
 			this.numeroDeLey = numeroDeLey;
 			this.tieneAguaPotable = tieneAguaPotable;
-			this.personas = personas;
 		}
-
+		
+		public void agregarPersona(Persona p) {
+			getPersonas().add(p);
+		}
+		
 		public int calcularDensidad() {
-			return personas.size() / getSuperficie();
+			return getPersonas().size() / getSuperficie();
 		}
 		
 		public boolean tieneCriticidadHabitacional() {
@@ -40,13 +42,5 @@ public class BUrbanizacionPlanificada extends Barrio {
 
 		public void setTieneAguaPotable(boolean tieneAguaPotable) {
 			this.tieneAguaPotable = tieneAguaPotable;
-		}
-
-		public ArrayList<Persona> getPersonas() {
-			return personas;
-		}
-
-		public void setPersonas(ArrayList<Persona> personas) {
-			this.personas = personas;
 		}
 	}

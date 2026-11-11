@@ -16,6 +16,8 @@ public class Persona {
 		this.situacionLaboral = situacionLaboral;
 		this.barrio = barrio;
 	}
+	
+	
 	public int getDNI() {
 		return DNI;
 	}
