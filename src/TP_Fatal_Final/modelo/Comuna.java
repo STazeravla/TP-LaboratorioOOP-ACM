@@ -6,17 +6,17 @@ public class Comuna {
 	private String nombreDeSede;
 	private String juntaComunal;
 	
-	public Comuna(int numeroComuna, String nombreDeSede, String juntaComunal){
-		super();
-		this.numeroComuna = numeroComuna;
-		this.nombreDeSede = nombreDeSede;
-		this.juntaComunal = juntaComunal;
-	}
+	//public Comuna(int numeroComuna, String nombreDeSede, String juntaComunal){
+	//	super();
+	//	this.numeroComuna = numeroComuna;
+	//	this.nombreDeSede = nombreDeSede;
+	//	this.juntaComunal = juntaComunal;
+	//}
 	
 	
-	public atencionPrioritaria() {
-		
-	}
+	//public atencionPrioritaria() {
+	//	
+	//}
 
 	public int getNumeroComuna() {
 		return numeroComuna;

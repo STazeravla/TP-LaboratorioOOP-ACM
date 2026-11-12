@@ -10,7 +10,6 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema bd_fatal_final
 -- -----------------------------------------------------
-DROP SCHEMA IF EXISTS `bd_fatal_final` ;
 
 -- -----------------------------------------------------
 -- Schema bd_fatal_final
@@ -19,10 +18,22 @@ CREATE SCHEMA IF NOT EXISTS `bd_fatal_final` DEFAULT CHARACTER SET utf8mb4 COLLA
 USE `bd_fatal_final` ;
 
 -- -----------------------------------------------------
+-- Table `bd_fatal_final`.`comuna`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `bd_fatal_final`.`comuna` (
+  `Nombre_Sede` VARCHAR(45) NOT NULL,
+  `Numero_Comuna` INT NOT NULL,
+  `Junta_Responsable` VARCHAR(45) NOT NULL,
+  `id_comuna` INT NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id_comuna`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
 -- Table `bd_fatal_final`.`persona`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `bd_fatal_final`.`persona` ;
-
 CREATE TABLE IF NOT EXISTS `bd_fatal_final`.`persona` (
   `DNI` VARCHAR(45) NOT NULL,
   `Fecha_Nacimiento` VARCHAR(45) NOT NULL,
@@ -37,25 +48,8 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
--- Table `bd_fatal_final`.`comuna`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `bd_fatal_final`.`comuna` ;
-
-CREATE TABLE IF NOT EXISTS `bd_fatal_final`.`comuna` (
-  `Nombre_Sede` VARCHAR(45) NOT NULL,
-  `Numero_Comuna` INT NOT NULL,
-  `Junta_Responsable` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`Numero_Comuna`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
 -- Table `bd_fatal_final`.`barrio`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `bd_fatal_final`.`barrio` ;
-
 CREATE TABLE IF NOT EXISTS `bd_fatal_final`.`barrio` (
   `Nombre` VARCHAR(45) NOT NULL,
   `Superficie` INT NOT NULL,
@@ -67,15 +61,16 @@ CREATE TABLE IF NOT EXISTS `bd_fatal_final`.`barrio` (
   `Cantidad_Monoblocks` INT NULL DEFAULT NULL,
   `fk_comuna` INT NOT NULL,
   `fk_Persona` INT NOT NULL,
-  PRIMARY KEY (`Nombre`),
-  INDEX `numero_comuna_idx` (`fk_comuna` ASC) VISIBLE,
+  `id_barrio` INT NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id_barrio`),
   INDEX `id_persona_idx` (`fk_Persona` ASC) VISIBLE,
+  INDEX `id_comuna_idx` (`fk_comuna` ASC) VISIBLE,
+  CONSTRAINT `id_comuna`comuna
+    FOREIGN KEY (`fk_comuna`)
+    REFERENCES `bd_fatal_final`.`comuna` (`id_comuna`),
   CONSTRAINT `id_persona`
     FOREIGN KEY (`fk_Persona`)
-    REFERENCES `bd_fatal_final`.`persona` (`idPersona`),
-  CONSTRAINT `numero_comuna`
-    FOREIGN KEY (`fk_comuna`)
-    REFERENCES `bd_fatal_final`.`comuna` (`Numero_Comuna`))
+    REFERENCES `bd_fatal_final`.`persona` (`idPersona`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
@@ -84,8 +79,6 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- Table `bd_fatal_final`.`situacion_laboral`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `bd_fatal_final`.`situacion_laboral` ;
-
 CREATE TABLE IF NOT EXISTS `bd_fatal_final`.`situacion_laboral` (
   `Desocupado` INT NULL DEFAULT NULL,
   `Ocupado` INT NULL DEFAULT NULL,
