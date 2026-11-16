@@ -4,7 +4,9 @@ public class Comuna {
 	
 	private int numeroComuna;
 	private String nombreDeSede;
-	private String juntaComunal;
+	private int numeroBarrios;
+	private String tipoDeBarrio;
+	private String numeroBarrio;
 	
 	//public Comuna(int numeroComuna, String nombreDeSede, String juntaComunal){
 	//	super();
@@ -34,18 +36,27 @@ public class Comuna {
 		this.nombreDeSede = nombreDeSede;
 	}
 
-	public String getJuntaComunal() {
-		return juntaComunal;
+	public int getNumeroBarrios() {
+		return numeroBarrios;
 	}
 
-	public void setJuntaComunal(String juntaComunal) {
-		this.juntaComunal = juntaComunal;
+	public void setNumeroBarrios(int numeroBarrios) {
+		this.numeroBarrios = numeroBarrios;
+	}
+
+	public String getTipoDeBarrio() {
+		return tipoDeBarrio;
+	}
+
+	public void setTipoDeBarrio(String tipoDeBarrio) {
+		this.tipoDeBarrio = tipoDeBarrio;
 	}
 	
 	
 	@Override
 	public String toString() {
-		return "Comuna [Numero=" + numeroComuna + ", nombre=" + nombreDeSede + ", juntaComunal="
-				+ juntaComunal + "]";
+		return "Comuna [Numero=" + numeroComuna + ", nombre=" + nombreDeSede + ", numeroBarrio="
+				+ numeroBarrio +", tipoDeBarrio="
+						+ tipoDeBarrio + "]";
 	}
 }

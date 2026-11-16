@@ -24,13 +24,14 @@ public class ComunaDAO {
 			int filasAfectadas = 0;
 			try {
 				c = DriverManager.getConnection(URL, USR, PSS);
-				String sql = "INSERT INTO `comuna` (`Numero_Comuna`, `Nombre_Sede`, `Junta_Responsable`) "
-						+ "VALUES (?, ?, ?);";
+				String sql = "INSERT INTO `comuna` (`Numero_Comuna`, `Nombre_Sede`, `Numero_Comuna`, `Tipo_Barrio`) "
+						+ "VALUES (?, ?, ?, ?);";
 				PreparedStatement stmt = c.prepareStatement(sql);
 				stmt.setInt(1, comuna.getNumeroComuna());
 				stmt.setString(2, comuna.getNombreDeSede());
-				stmt.setString(3, comuna.getJuntaComunal());
-
+				stmt.setInt(3, comuna.getNumeroBarrios());
+				stmt.setString(4, comuna.getTipoDeBarrio());
+				
 				filasAfectadas = stmt.executeUpdate();
 
 			} catch (SQLIntegrityConstraintViolationException e) {
@@ -81,13 +82,14 @@ public class ComunaDAO {
 			int filasAfectadas = 0;
 			try {
 				c = DriverManager.getConnection(URL, USR, PSS);
-				String sql = "UPDATE comuna SET `Numero_Comuna` = ?, `Nombre_Sede` = ?, `Junta_Responsable` = ?"
+				String sql = "UPDATE comuna SET `Numero_Comuna` = ?, `Nombre_Sede` = ?, `Numero_Comuna` = ?, `Tipo_Barrio` = ?"
 						+ "WHERE `Numero_Comuna` = ?;";
 				PreparedStatement stmt = c.prepareStatement(sql);
 				stmt.setInt(1, comunaActualizada.getNumeroComuna());
 				stmt.setString(2, comunaActualizada.getNombreDeSede());
-				stmt.setString(3, comunaActualizada.getJuntaComunal());
-				stmt.setInt(4, numeroComunaActual);
+				stmt.setInt(3, comunaActualizada.getNumeroBarrios());
+				stmt.setString(4, comunaActualizada.getTipoDeBarrio());
+				stmt.setInt(5, numeroComunaActual);
 
 				filasAfectadas = stmt.executeUpdate();
 
@@ -114,7 +116,7 @@ public class ComunaDAO {
 			Connection c = null;
 			try {
 				c = DriverManager.getConnection(URL, USR, PSS);
-				String sql = "SELECT Numero_Comuna, Nombre_Sede, Junta_Responsable FROM comuna";
+				String sql = "SELECT Numero_Comuna, Nombre_Sede, Numero_Barrios, Tipo_Barrio FROM comuna";
 				Statement stmt = c.createStatement();
 				ResultSet rs = stmt.executeQuery(sql);
 
@@ -123,7 +125,8 @@ public class ComunaDAO {
 					Comuna unaComuna= new Comuna();
 					unaComuna.setNumeroComuna(rs.getInt("Numero_Comuna"));
 					unaComuna.setNombreDeSede(rs.getString("Nombre_Sede"));
-					unaComuna.setJuntaComunal(rs.getString("Junta_Responsable"));
+					unaComuna.setNumeroBarrios(rs.getInt("Numero_Barrios"));
+					unaComuna.setTipoDeBarrio(rs.getString("Tipo_Barrio"));
 					
 					comunas.add(unaComuna);
 				}
@@ -149,7 +152,7 @@ public class ComunaDAO {
 			Connection c = null;
 			try {
 				c = DriverManager.getConnection(URL, USR, PSS);
-				String sql = "SELECT Numero_Comuna, Nombre_Sede, Junta_Responsable FROM comuna WHERE Numero_Comuna = ?";
+				String sql = "SELECT Numero_Comuna, Nombre_Sede, Numero_Barrios, Tipo_Barrios FROM comuna WHERE Numero_Comuna = ?";
 				PreparedStatement stmt = c.prepareStatement(sql);
 				stmt.setInt(1, numeroComuna);
 				ResultSet rs = stmt.executeQuery();
@@ -161,7 +164,8 @@ public class ComunaDAO {
 					comuna = new Comuna();
 					comuna.setNumeroComuna(rs.getInt("Numero_Comuna"));
 					comuna.setNombreDeSede(rs.getString("Nombre_Sede"));
-					comuna.setJuntaComunal(rs.getString("Junta_Responsable"));
+					comuna.setNumeroBarrios(rs.getInt("Numero_Barrios"));
+					comuna.setTipoDeBarrio(rs.getString("Tipo_Barrio"));
 										
 				}
 
