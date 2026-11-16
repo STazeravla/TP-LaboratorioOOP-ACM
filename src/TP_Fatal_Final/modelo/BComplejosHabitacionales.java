@@ -7,33 +7,33 @@ public class BComplejosHabitacionales extends Barrio {
 	private int cantidadDeMonoblocks;
 	private boolean tieneAdministracionActiva;
 	
-	ArrayList<Persona> personas = new ArrayList<>();
+	public BComplejosHabitacionales() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public BComplejosHabitacionales(String nombreBarrio, int superficie, int numeroBarrio) {
+		super(nombreBarrio, superficie, numeroBarrio);
+		// TODO Auto-generated constructor stub
+	}
 	
 	
-	
-	public BComplejosHabitacionales(int cantidadDeMonoblocks, boolean tieneAdministracionActiva, ArrayList<Persona> personas) {
+	public BComplejosHabitacionales(String nombreBarrio, int superficie, int cantidadDeMonoblocks, boolean tieneAdministracionActiva, ArrayList<Persona> personas) {
 		super();
 		this.cantidadDeMonoblocks = cantidadDeMonoblocks;
 		this.tieneAdministracionActiva= tieneAdministracionActiva;
-		this.personas = personas;
 	}
 
+	public void agregarPersona(Persona p) {
+		getPersonas().add(p);
+	}
+	
 	public int calcularDensidad() {
-		return personas.size() / getCantidadDeMonoblocks() ;
+		return getPersonas().size() / getCantidadDeMonoblocks() ;
 	}
 	
 	public boolean tieneCriticidadHabitacional() {
 		return isTieneAdministracionActiva() == false;
-	}
-
-	
-
-	public ArrayList<Persona> getPersonas() {
-		return personas;
-	}
-
-	public void setPersonas(ArrayList<Persona> personas) {
-		this.personas = personas;
 	}
 
 	public int getCantidadDeMonoblocks() {
