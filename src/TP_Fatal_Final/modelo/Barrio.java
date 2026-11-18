@@ -2,6 +2,8 @@ package TP_Fatal_Final.modelo;
 
 import java.util.ArrayList;
 
+import javax.swing.JTextField;
+
 public abstract class Barrio {
 
 	
@@ -27,8 +29,8 @@ public abstract class Barrio {
 	public String getNombreBarrio() {
 		return nombreBarrio;
 	}
-	public void setNombreBarrio(String nombreBarrio) {
-		this.nombreBarrio = nombreBarrio;
+	public void setNombreBarrio(String string) {
+		this.nombreBarrio = string;
 	}
 	public int getSuperficie() {
 		return superficie;

@@ -9,7 +9,6 @@ import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-
 import TP_Fatal_Final.modelo.Barrio;
 import TP_Fatal_Final.modelo.BUrbanizacionPlanificada;
 
@@ -23,42 +22,67 @@ public class BUrbanizacionPlanificadaDAO {
 		Connection c = null; 
 		int filasAfectadas = 0;
 		try {
-			c = DriverManager.getConnection(URL, USR, PSS);
+			c = DriverManager.getConnection(URL, USR, PSS); 
 			String sql = "INSERT INTO `barrio` (`nombreBarrio`,`superficie`,`Conexion_Agua`,`Ley_Integracion`) "
 					+ "VALUES (?,?,?,?)";
+			
+				PreparedStatement stmt = c.prepareStatement(sql); 
+				stmt.setString(1, B.getNombreBarrio());
+				stmt.setInt(2, B.getSuperficie());
+				stmt.setBoolean(3, B.isTieneAguaPotable());
+				stmt.setInt(4, B.getNumeroDeLey());
+				filasAfectadas = stmt.executeUpdate();
+			
+			
+
+			
+
+		} catch (SQLIntegrityConstraintViolationException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (c != null) {
+				try { c.close(); } catch (SQLException e) { e.printStackTrace(); }
+			}
+		}
+		return filasAfectadas > 0;
+	}
+
+	public boolean eliminar(String nombreBarrio) {
+		Connection c = null;
+		int filasAfectadas = 0;
+		try {
+			c = DriverManager.getConnection(URL, USR, PSS);
+			String sql = "DELETE FROM barrio WHERE nombreBarrio = ?;";
+			PreparedStatement stmt = c.prepareStatement(sql);
+			stmt.setString(1, nombreBarrio);
+
+			filasAfectadas = stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if (c != null) {
+				try { c.close(); } catch (SQLException e) { e.printStackTrace(); }
+			}
+		}
+		return filasAfectadas > 0;
+	}
+
+	public boolean actualizar(BUrbanizacionPlanificada B, String nombreActual) {
+		Connection c = null;
+		int filasAfectadas = 0;
+		try {
+			c = DriverManager.getConnection(URL, USR, PSS);
+			String sql = "UPDATE barrio SET `nombreBarrio` = ?, `superficie` = ?, `Conexion_Agua` = ?, `Ley_Integracion` = ? "
+					+ "WHERE `nombreBarrio` = ?;";
 			PreparedStatement stmt = c.prepareStatement(sql);
 			stmt.setString(1, B.getNombreBarrio());
-			stmt.setInt(2,B.getSuperficie());
+			stmt.setInt(2, B.getSuperficie());
 			stmt.setBoolean(3, B.isTieneAguaPotable());
-			stmt.setInt(4,B.getNumeroDeLey());
-
-			filasAfectadas = stmt.executeUpdate();
-
-		} catch (SQLIntegrityConstraintViolationException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return filasAfectadas == 0 ? false : true;
-	}
-
-	public boolean eliminar(int numeroBarrio) {
-		Connection c = null;
-		int filasAfectadas = 0;
-		try {
-			c = DriverManager.getConnection(URL, USR, PSS);
-			String sql = "DELETE FROM barrio WHERE numeroBarrio = ?;";
-
-			PreparedStatement stmt = c.prepareStatement(sql);
-			stmt.setInt(1, numeroBarrio);
+			stmt.setInt(4, B.getNumeroDeLey());
+			stmt.setString(5, nombreActual);
 
 			filasAfectadas = stmt.executeUpdate();
 
@@ -66,125 +90,67 @@ public class BUrbanizacionPlanificadaDAO {
 			e.printStackTrace();
 		} finally {
 			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+				try { c.close(); } catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
-		return filasAfectadas == 0 ? false : true;
-	}
-
-	public boolean actualizar(BUrbanizacionPlanificada B, int numeroActual) {
-		Connection c = null;
-		int filasAfectadas = 0;
-		try {
-			c = DriverManager.getConnection(URL, USR, PSS);
-			String sql = "UPDATE barrio SET `numeroActual` = ?, `nombreBarrio` = ?, `Superficie` = ?, `Conexion_Agua` = ?, `Ley_Integracion` = ?"
-					+ " WHERE `numeroBarrio` = ?;";
-			PreparedStatement stmt = c.prepareStatement(sql);
-			stmt.setInt(1, B.getNumeroBarrio());
-			stmt.setString(2, B.getNombreBarrio());
-			stmt.setInt(3, B.getSuperficie());
-			stmt.setBoolean(4, B.isTieneAguaPotable());
-			stmt.setInt(5, B.getNumeroDeLey());
-			stmt.setInt(6, numeroActual);
-
-			filasAfectadas = stmt.executeUpdate();
-
-		} catch (SQLIntegrityConstraintViolationException e) {
-		
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return filasAfectadas == 0 ? false : true;
+		return filasAfectadas > 0;
 	}
 
 	public ArrayList<Barrio> traerTodos() {
 		ArrayList<Barrio> Barrios = new ArrayList<Barrio>();
-
 		Connection c = null;
 		try {
 			c = DriverManager.getConnection(URL, USR, PSS);
-			String sql = "SELECT numeroBarrio, nombreBarrio, Superficie,Conexion_Agua, Ley_Integracion FROM barrio";
+			String sql = "SELECT nombreBarrio, superficie, Conexion_Agua, Ley_Integracion FROM barrio WHERE Ley_Integracion IS NOT NULL";
 			Statement stmt = c.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
 
 			while (rs.next()) {
-
 				BUrbanizacionPlanificada unBarrio = new BUrbanizacionPlanificada();
-				unBarrio.setNumeroBarrio(rs.getInt("numeroBarrio"));
-				unBarrio.setNombreBarrio(rs.getString("nombreBarrio"));
-				unBarrio.setTieneAguaPotable(rs.getBoolean("Conexion_Agua"));
-				unBarrio.setNumeroDeLey(rs.getInt("Ley_Integracion"));
-				unBarrio.setSuperficie(rs.getInt("superficie"));
 				
+					unBarrio.setNombreBarrio(rs.getString("nombreBarrio"));
+					unBarrio.setSuperficie(rs.getInt("superficie"));
+					unBarrio.setTieneAguaPotable(rs.getBoolean("Conexion_Agua"));
+					unBarrio.setNumeroDeLey(rs.getInt("Ley_Integracion"));
 
-				Barrios.add(unBarrio);
-			}
-
+					Barrios.add(unBarrio);
+				}
+				
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+				try { c.close(); } catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
-
 		return Barrios;
-
 	}
 
-	public Barrio buscarPorNumeroBarrio(int numeroBarrio) {
+	public Barrio buscarPorNombre(String nombreBarrio) {
 		BUrbanizacionPlanificada Barrio = null;
 		Connection c = null;
 		try {
 			c = DriverManager.getConnection(URL, USR, PSS);
-			String sql = "SELECT numeroBarrio, nombreBarrio, Superficie,Conexion_Agua, Ley_Integracion FROM barrio = ?";
+			String sql = "SELECT nombreBarrio, superficie, Conexion_Agua, Ley_Integracion FROM barrio WHERE nombreBarrio = ?";
 			PreparedStatement stmt = c.prepareStatement(sql);
-			stmt.setInt(1, numeroBarrio);
+			stmt.setString(1, nombreBarrio);
 			ResultSet rs = stmt.executeQuery();
 
-			
 			if (rs.next()) {
-
 				Barrio = new BUrbanizacionPlanificada();
-				Barrio.setNumeroBarrio(rs.getInt("numeroBarrio"));
 				Barrio.setNombreBarrio(rs.getString("nombreBarrio"));
-				Barrio.setSuperficie(rs.getInt("Superficie"));
+				Barrio.setSuperficie(rs.getInt("superficie"));
 				Barrio.setTieneAguaPotable(rs.getBoolean("Conexion_Agua"));
 				Barrio.setNumeroDeLey(rs.getInt("Ley_Integracion"));
-				
-
-				
 			}
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			if (c != null) {
-				try {
-					c.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+				try { c.close(); } catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
-
 		return Barrio;
 	}
 }
