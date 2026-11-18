@@ -13,7 +13,7 @@ public class App {
 		marco.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		marco.setBounds(0, 0, 600, 800);
 		
-		marco.setContentPane(new BarrioConsulta());
+		marco.setContentPane(new ComunaConsulta());
 		marco.validate();
 
 	}

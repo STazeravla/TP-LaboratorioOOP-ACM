@@ -13,6 +13,7 @@ import javax.swing.JCheckBox;
 import TP_Fatal_Final.dao.BComplejosHabitacionalesDAO;
 import TP_Fatal_Final.dao.BTrazadoFormalDAO;
 import TP_Fatal_Final.dao.BUrbanizacionPlanificadaDAO;
+import TP_Fatal_Final.dao.ComunaDAO; // 👈 Asegurate de tener este DAO o crearlo
 import TP_Fatal_Final.modelo.Barrio;
 
 import TP_Fatal_Final.modelo.BTrazadoFormal;
@@ -20,9 +21,15 @@ import TP_Fatal_Final.modelo.BComplejosHabitacionales;
 import TP_Fatal_Final.modelo.BUrbanizacionPlanificada;
 
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.awt.event.ItemEvent;
 
 public class BarrioAltaModificacion extends JPanel {
@@ -43,11 +50,11 @@ public class BarrioAltaModificacion extends JPanel {
 	private JTextField txtLeyIntegracion;
 	private JCheckBox chkAguaPotable;
 	
-	// Componentes específicos: Complejos Habitacionales
 	private JLabel lblMonoblocks;
 	private JTextField txtMonoblocks;
 	private JCheckBox chkConsorcio;
 	
+	private JComboBox<String> cbComuna; 
 	private JButton btnGuardarModificar;
 
 	/**
@@ -134,6 +141,18 @@ public class BarrioAltaModificacion extends JPanel {
 		chkConsorcio.setBounds(160, 210, 200, 20);
 		add(chkConsorcio);
 
+		// --- Comuna ---
+		JLabel lblComuna = new JLabel("Comuna");
+		lblComuna.setBounds(20, 255, 130, 20);
+		add(lblComuna);
+
+		cbComuna = new JComboBox<String>();
+		cbComuna.setBounds(160, 251, 150, 22);
+		add(cbComuna);
+		
+		// Cargamos las opciones de comunas desde la base de datos
+		cargarComunas();
+
 		// Listener para actualizar la visibilidad de los campos según la opción del ComboBox
 		ActionListener listenerTipo = new ActionListener() {
 			@Override
@@ -155,8 +174,6 @@ public class BarrioAltaModificacion extends JPanel {
 		if (barrioAModificar != null) {
 			txtNombreBarrio.setText(barrioAModificar.getNombreBarrio());
 			txtSuperficie.setText(String.valueOf(barrioAModificar.getSuperficie()));
-			// cbTipoBarrio.setSelectedItem(barrioAModificar.getTipoDeBarrio());
-			// Cargar campos específicos correspondientes...
 		}
 
 		// Botón Volver
@@ -168,7 +185,7 @@ public class BarrioAltaModificacion extends JPanel {
 				marco.validate();
 			}
 		});
-		btnVolver.setBounds(190, 275, 90, 25);
+		btnVolver.setBounds(190, 301, 90, 25);
 		add(btnVolver);
 		
 		// Botón Guardar / Modificar
@@ -177,21 +194,20 @@ public class BarrioAltaModificacion extends JPanel {
 		btnGuardarModificar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String tipoSeleccionado = (String) cbTipoBarrio.getSelectedItem();
+				String comunaSeleccionada = (String) cbComuna.getSelectedItem(); // Obtenemos la comuna elegida
 				
-				// Dentro del botón guardar/modificar de BarrioAltaModificacion:
-
 				if ("Trazado Formal".equals(tipoSeleccionado)) {
 				    BTrazadoFormal btf = new BTrazadoFormal();
 				    btf.setNombreBarrio(txtNombreBarrio.getText());
 				    btf.setSuperficie(Integer.valueOf(txtSuperficie.getText()));
 				    btf.setCantidadDeEdificiosHorizontales(Integer.valueOf(txtEdificiosPH.getText()));
 				    btf.setPorAsfaltoEnCalles(Integer.valueOf(txtAsfalto.getText()));
+				    // btf.setComuna(comunaSeleccionada); // Asignar si tu modelo lo requiere
 				    
 				    BTrazadoFormalDAO dao = new BTrazadoFormalDAO();
 				    if (barrioAModificar == null) {
 				        dao.guardar(btf);
 				    } else {
-				        // 👈 Le pasamos el nombre original para que el DAO haga el UPDATE por nombreBarrio
 				        dao.actualizar(btf, barrioAModificar.getNombreBarrio());
 				    }
 				    
@@ -201,6 +217,7 @@ public class BarrioAltaModificacion extends JPanel {
 				    bch.setSuperficie(Integer.valueOf(txtSuperficie.getText()));
 				    bch.setCantidadDeMonoblocks(Integer.valueOf(txtMonoblocks.getText()));
 				    bch.setTieneAdministracionActiva(chkConsorcio.isSelected());
+				    // bch.setComuna(comunaSeleccionada);
 				    
 				    BComplejosHabitacionalesDAO dao = new BComplejosHabitacionalesDAO();
 				    if (barrioAModificar == null) {
@@ -215,6 +232,7 @@ public class BarrioAltaModificacion extends JPanel {
 				    bup.setSuperficie(Integer.valueOf(txtSuperficie.getText()));
 				    bup.setNumeroDeLey(Integer.valueOf(txtLeyIntegracion.getText()));
 				    bup.setTieneAguaPotable(chkAguaPotable.isSelected());
+				    // bup.setComuna(comunaSeleccionada);
 				    
 				    BUrbanizacionPlanificadaDAO dao = new BUrbanizacionPlanificadaDAO();
 				    if (barrioAModificar == null) {
@@ -229,11 +247,25 @@ public class BarrioAltaModificacion extends JPanel {
 				marco.validate();
 			}
 		});
-		btnGuardarModificar.setBounds(90, 275, 90, 25);
+		btnGuardarModificar.setBounds(90, 301, 90, 25);
 		add(btnGuardarModificar);
 
-		// Establecer visibilidad inicial
 		actualizarCamposDinamicos();
+	}
+
+	/**
+	 * Método para hacer el SELECT de las comunas y cargarlas en el JComboBox
+	 */
+	private void cargarComunas() {
+		ComunaDAO comunaDao = new ComunaDAO(); // Asegurate de tener este DAO implementado
+		ArrayList<String> listaComunas = comunaDao.traerNombresComunas();
+		
+		cbComuna.addItem("Seleccione una comuna...");
+		if (listaComunas != null) {
+			for (String nombreComuna : listaComunas) {
+				cbComuna.addItem(nombreComuna);
+			}
+		}
 	}
 
 	/**

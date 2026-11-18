@@ -9,9 +9,10 @@ import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 import TP_Fatal_Final.modelo.Comuna;
-
+import TP_Fatal_Final.modelo.Barrio;
 
 public class ComunaDAO {
 
@@ -19,6 +20,11 @@ public class ComunaDAO {
 		private final static String USR = "root";
 		private final static String PSS = "admin";
 
+		List<Barrio> obtenerTodos() {
+			
+			return obtenerTodos();
+		}
+		
 		public boolean guardar(Comuna comuna) {
 			Connection c = null;
 			int filasAfectadas = 0;
@@ -114,7 +120,7 @@ public class ComunaDAO {
 			Connection c = null;
 			try {
 				c = DriverManager.getConnection(URL, USR, PSS);
-				String sql = "SELECT Numero_Comuna, Nombre_Sede, Cantidad_Barrios, Tipo_Barrio FROM comuna";
+				String sql = "SELECT Numero_Comuna, Nombre_Sede, Cantidad_Barrios FROM comuna";
 				Statement stmt = c.createStatement();
 				ResultSet rs = stmt.executeQuery(sql);
 
@@ -123,7 +129,7 @@ public class ComunaDAO {
 					Comuna unaComuna= new Comuna();
 					unaComuna.setNumeroComuna(rs.getInt("Numero_Comuna"));
 					unaComuna.setNombreDeSede(rs.getString("Nombre_Sede"));
-					unaComuna.setCantidadBarrios(rs.getInt("Cantidad_Barrios"));
+					unaComuna.setCantidadBarrios(rs.getInt(obtenerTodos().size()));
 					
 					comunas.add(unaComuna);
 				}
@@ -144,6 +150,30 @@ public class ComunaDAO {
 
 		}
 
+	    public ArrayList<String> traerNombresComunas() {
+	        ArrayList<String> comunas = new ArrayList<>();
+	        Connection c = null;
+	        try {
+	            c = DriverManager.getConnection(URL, USR, PSS);
+	            String sql = "SELECT Nombre_Sede FROM comuna"; // Ajustá 'nombre' y la tabla a tu esquema real
+	            Statement stmt = c.createStatement();
+	            ResultSet rs = stmt.executeQuery(sql);
+
+	            while (rs.next()) {
+	                comunas.add(rs.getString("nombre")); // Asegurate que coincida con la columna de tu BD
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        } finally {
+	            if (c != null) {
+	                try { c.close(); } catch (SQLException e) { e.printStackTrace(); }
+	            }
+	        }
+	        return comunas;
+	    }
+		
+		
+		
 		public Comuna buscarPorNumeroDeComuna(int numeroComuna) {
 			Comuna comuna= null;
 			Connection c = null;
@@ -161,7 +191,7 @@ public class ComunaDAO {
 					comuna = new Comuna();
 					comuna.setNumeroComuna(rs.getInt("Numero_Comuna"));
 					comuna.setNombreDeSede(rs.getString("Nombre_Sede"));
-					comuna.setCantidadBarrios(rs.getInt("Cantidad_Barrios"));
+					//comuna.setCantidadBarrios(rs.getInt(obtenerTodos().size()));
 										
 				}
 

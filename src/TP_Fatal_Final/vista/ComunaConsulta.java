@@ -38,7 +38,7 @@ public class ComunaConsulta extends JPanel {
 
 		table = new JTable();
 		scrollPane.setViewportView(table);
-		modeloTabla = new DefaultTableModel(new Object[] { "Numero de comuna", "Nombre de sede", "Numero de barrios", "Tipo de barrio" }, 0);
+		modeloTabla = new DefaultTableModel(new Object[] { "Numero de comuna", "Nombre de sede", "Numero de barrios" }, 0);
 		table.setModel(modeloTabla);
 
 		cargarTabla();
@@ -94,7 +94,7 @@ public class ComunaConsulta extends JPanel {
 		ComunaDAO cDAO = new ComunaDAO();
 		ArrayList<Comuna> comunas= cDAO.traerTodas();
 		for (Comuna c : comunas) {
-			modeloTabla.addRow(new Object[] { c.getNumeroComuna(), c.getNombreDeSede(), c.getNumeroBarrios(), c.getTipoDeBarrio()});
+			modeloTabla.addRow(new Object[] { c.getNumeroComuna(), c.getNombreDeSede(), c.getCantidadBarrios()});
 		}
 	}
 
