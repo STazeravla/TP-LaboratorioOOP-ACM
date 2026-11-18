@@ -9,6 +9,16 @@ public class BUrbanizacionPlanificada extends Barrio {
 		
 		ArrayList<Persona> personas = new ArrayList<>();
 		
+
+		public BUrbanizacionPlanificada() {
+			super();
+			// TODO Auto-generated constructor stub
+		}
+
+		public BUrbanizacionPlanificada(String nombreBarrio, int superficie, int numeroBarrio) {
+			super(nombreBarrio, superficie, numeroBarrio);
+			// TODO Auto-generated constructor stub
+		}
 		
 		
 		public BUrbanizacionPlanificada(int numeroDeLey, boolean tieneAguaPotable, ArrayList<Persona> personas) {

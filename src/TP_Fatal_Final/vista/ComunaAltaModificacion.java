@@ -72,10 +72,6 @@ public class ComunaAltaModificacion extends JPanel {
 		lblNewLabel_2.setBounds(12, 113, 95, 14);
 		add(lblNewLabel_2);
 		
-		JLabel lblNewLabel_3 = new JLabel("Tipo de barrio");
-		lblNewLabel_3.setBounds(12, 159, 95, 14);
-		add(lblNewLabel_3);
-		
 		txtNumeroBarrios= new JTextField();
 		txtNumeroBarrios.setBounds(147, 109, 86, 20);
 		add(txtNumeroBarrios);

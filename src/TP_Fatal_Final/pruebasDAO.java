@@ -4,8 +4,10 @@ import java.util.Arrays;
 
 import TP_Fatal_Final.dao.BComplejosHabitacionalesDAO;
 import TP_Fatal_Final.dao.BTrazadoFormalDAO;
+import TP_Fatal_Final.dao.BUrbanizacionPlanificadaDAO;
 import TP_Fatal_Final.modelo.BComplejosHabitacionales;
 import TP_Fatal_Final.modelo.BTrazadoFormal;
+import TP_Fatal_Final.modelo.BUrbanizacionPlanificada;
 import TP_Fatal_Final.modelo.Barrio;
 import TP_Fatal_Final.modelo.Persona;
 
@@ -37,18 +39,32 @@ public class pruebasDAO {
 		//	System.out.println(comuna);
 		//	Para mostrar solo el nombre de sede de las comunas:
 		//  System.out.println(comuna.getNombreDeSede());
+	
+		//BComplejosHabitacionales yo = new BComplejosHabitacionales();
 		
-		BComplejosHabitacionales yo = new BComplejosHabitacionales();
+		//yo.setNombreBarrio("Bou");
+		//yo.setNumeroBarrio(19);
+		//yo.setCantidadDeMonoblocks(30);
+		//yo.setSuperficie(1500);
+		//yo.setTieneAdministracionActiva(true);
+				
+		//BComplejosHabitacionalesDAO bchDAO = new BComplejosHabitacionalesDAO();
+		
+		//bchDAO.guardar(yo);
+	
+		
+		
+		BUrbanizacionPlanificada yo = new BUrbanizacionPlanificada();
 		
 		yo.setNombreBarrio("Bou");
 		yo.setNumeroBarrio(19);
-		yo.setCantidadDeMonoblocks(30);
+		yo.setNumeroDeLey(30);
 		yo.setSuperficie(1500);
-		yo.setTieneAdministracionActiva(true);
+		yo.setTieneAguaPotable(true);
 				
-		BComplejosHabitacionalesDAO bchDAO = new BComplejosHabitacionalesDAO();
+		BUrbanizacionPlanificadaDAO bupDAO = new BUrbanizacionPlanificadaDAO();
 		
-		bchDAO.guardar(yo);
+		bupDAO.guardar(yo);
 		
 	
 	
