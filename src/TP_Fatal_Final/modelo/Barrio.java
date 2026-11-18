@@ -8,6 +8,7 @@ public abstract class Barrio {
 	private String nombreBarrio;
 	private int superficie;
 	private int numeroBarrio;
+	private String tipoDeBarrio;
 	
 	private ArrayList<Persona> personas = new ArrayList<>();
 	
@@ -52,5 +53,13 @@ public abstract class Barrio {
 
 	public void setNumeroBarrio(int numeroBarrio) {
 		this.numeroBarrio = numeroBarrio;
+	}
+
+	public String getTipoDeBarrio() {
+		return tipoDeBarrio;
+	}
+
+	public void setTipoDeBarrio(String tipoDeBarrio) {
+		this.tipoDeBarrio = tipoDeBarrio;
 	}
 }
