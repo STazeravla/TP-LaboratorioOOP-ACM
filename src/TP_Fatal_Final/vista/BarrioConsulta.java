@@ -37,11 +37,17 @@ public class BarrioConsulta extends JPanel {
 
 		table = new JTable();
 		scrollPane.setViewportView(table);
-		
-		// 📌 Únicamente las 3 columnas solicitadas: Nombre, Superficie y Tipo
-		modeloTabla = new DefaultTableModel(new Object[] { 
-			"Nombre", "Superficie", "Tipo" 
-		}, 0);
+
+		modeloTabla = new DefaultTableModel(new Object[] {
+			"Nombre", "Superficie", "Tipo", "Comuna"
+		}, 0) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
 		table.setModel(modeloTabla);
 
 		cargarTabla();
@@ -62,11 +68,11 @@ public class BarrioConsulta extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				int filaSeleccionada = table.getSelectedRow();
 				if (filaSeleccionada != -1) {
-					String nombreBarrio = (String) table.getValueAt(filaSeleccionada, 0);
-					String tipoBarrio = (String) table.getValueAt(filaSeleccionada, 2);
-					
+					String nombreBarrio = String.valueOf(table.getValueAt(filaSeleccionada, 0));
+					String tipoBarrio = String.valueOf(table.getValueAt(filaSeleccionada, 2));
+
 					Barrio barrioAModificar = null;
-					
+
 					if ("Trazado Formal".equals(tipoBarrio)) {
 						barrioAModificar = new BTrazadoFormalDAO().buscarPorNombre(nombreBarrio);
 					} else if ("Complejo Habitacional".equals(tipoBarrio)) {
@@ -74,29 +80,33 @@ public class BarrioConsulta extends JPanel {
 					} else if ("Urbanización Planificada".equals(tipoBarrio)) {
 						barrioAModificar = new BUrbanizacionPlanificadaDAO().buscarPorNombre(nombreBarrio);
 					}
-					
+
 					JFrame marco = (JFrame) SwingUtilities.getWindowAncestor((Component) e.getSource());
 					marco.setContentPane(new BarrioAltaModificacion(barrioAModificar));
 					marco.validate();
+				} else {
+					JOptionPane.showMessageDialog(null, "Por favor, seleccione un barrio de la lista.", "Aviso", JOptionPane.WARNING_MESSAGE);
 				}
 			}
 		});
 		btnModificar.setBounds(500, 63, 115, 23);
 		add(btnModificar);
 
-		// Botón Ver Detalles (para consultar la info específica sin ensuciar la tabla principal)
 		JButton btnVerDetalles = new JButton("Ver detalles");
 		btnVerDetalles.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int filaSeleccionada = table.getSelectedRow();
 				if (filaSeleccionada != -1) {
-					String nombreBarrio = (String) table.getValueAt(filaSeleccionada, 0);
-					String tipoBarrio = (String) table.getValueAt(filaSeleccionada, 2);
-					
+					String nombreBarrio = String.valueOf(table.getValueAt(filaSeleccionada, 0));
+					String tipoBarrio = String.valueOf(table.getValueAt(filaSeleccionada, 2));
+					Object valorComuna = table.getValueAt(filaSeleccionada, 3);
+					String comunaBarrio = valorComuna != null ? valorComuna.toString() : "";
+
 					StringBuilder detalle = new StringBuilder();
 					detalle.append("Barrio: ").append(nombreBarrio).append("\n");
-					detalle.append("Tipo: ").append(tipoBarrio).append("\n\n");
-					
+					detalle.append("Tipo: ").append(tipoBarrio).append("\n");
+					detalle.append("Comuna: ").append(comunaBarrio).append("\n\n");
+
 					if ("Trazado Formal".equals(tipoBarrio)) {
 						BTrazadoFormal b = (BTrazadoFormal) new BTrazadoFormalDAO().buscarPorNombre(nombreBarrio);
 						if (b != null) {
@@ -116,7 +126,7 @@ public class BarrioConsulta extends JPanel {
 							detalle.append("Conexión Agua Potable: ").append(b.isTieneAguaPotable() ? "Sí" : "No").append("\n");
 						}
 					}
-					
+
 					JOptionPane.showMessageDialog(null, detalle.toString(), "Detalles del Barrio", JOptionPane.INFORMATION_MESSAGE);
 				} else {
 					JOptionPane.showMessageDialog(null, "Por favor, seleccione un barrio de la lista.", "Aviso", JOptionPane.WARNING_MESSAGE);
@@ -131,9 +141,9 @@ public class BarrioConsulta extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				int filaSeleccionada = table.getSelectedRow();
 				if (filaSeleccionada != -1) {
-					String nombreBarrio = (String) table.getValueAt(filaSeleccionada, 0);
-					String tipoBarrio = (String) table.getValueAt(filaSeleccionada, 2);
-					
+					String nombreBarrio = String.valueOf(table.getValueAt(filaSeleccionada, 0));
+					String tipoBarrio = String.valueOf(table.getValueAt(filaSeleccionada, 2));
+
 					if ("Trazado Formal".equals(tipoBarrio)) {
 						new BTrazadoFormalDAO().eliminar(nombreBarrio);
 					} else if ("Complejo Habitacional".equals(tipoBarrio)) {
@@ -141,8 +151,10 @@ public class BarrioConsulta extends JPanel {
 					} else if ("Urbanización Planificada".equals(tipoBarrio)) {
 						new BUrbanizacionPlanificadaDAO().eliminar(nombreBarrio);
 					}
-					
+
 					cargarTabla();
+				} else {
+					JOptionPane.showMessageDialog(null, "Por favor, seleccione un barrio de la lista.", "Aviso", JOptionPane.WARNING_MESSAGE);
 				}
 			}
 		});
@@ -150,47 +162,28 @@ public class BarrioConsulta extends JPanel {
 		add(btnEliminar);
 	}
 
+	private void agregarFilasDesdeLista(ArrayList<Barrio> listaBarrios, String tipoBarrio) {
+		if (listaBarrios != null) {
+			for (Barrio b : listaBarrios) {
+				modeloTabla.addRow(new Object[] {
+					b.getNombreBarrio(),
+					b.getSuperficie(),
+					tipoBarrio,
+					b.getComuna()
+				});
+			}
+		}
+	}
+
 	private void cargarTabla() {
 		modeloTabla.setRowCount(0);
-		
+
 		BTrazadoFormalDAO daoFormal = new BTrazadoFormalDAO();
 		BComplejosHabitacionalesDAO daoComplejos = new BComplejosHabitacionalesDAO();
 		BUrbanizacionPlanificadaDAO daoPlanificada = new BUrbanizacionPlanificadaDAO();
-		
-		// 1. Trazado Formal
-		ArrayList<Barrio> listaFormales = daoFormal.traerTodos();
-		if (listaFormales != null) {
-			for (Barrio b : listaFormales) {
-				modeloTabla.addRow(new Object[] { 
-					b.getNombreBarrio(), 
-					b.getSuperficie(), 
-					"Trazado Formal"
-				});
-			}
-		}
-		
-		// 2. Complejos Habitacionales
-		ArrayList<Barrio> listaComplejos = daoComplejos.traerTodos();
-		if (listaComplejos != null) {
-			for (Barrio b : listaComplejos) {
-				modeloTabla.addRow(new Object[] { 
-					b.getNombreBarrio(), 
-					b.getSuperficie(), 
-					"Complejo Habitacional"
-				});
-			}
-		}
-		
-		// 3. Urbanización Planificada
-		ArrayList<Barrio> listaPlanificadas = daoPlanificada.traerTodos();
-		if (listaPlanificadas != null) {
-			for (Barrio b : listaPlanificadas) {
-				modeloTabla.addRow(new Object[] { 
-					b.getNombreBarrio(), 
-					b.getSuperficie(), 
-					"Urbanización Planificada"
-				});
-			}
-		}
+
+		agregarFilasDesdeLista(daoFormal.traerTodos(), "Trazado Formal");
+		agregarFilasDesdeLista(daoComplejos.traerTodos(), "Complejo Habitacional");
+		agregarFilasDesdeLista(daoPlanificada.traerTodos(), "Urbanización Planificada");
 	}
 }

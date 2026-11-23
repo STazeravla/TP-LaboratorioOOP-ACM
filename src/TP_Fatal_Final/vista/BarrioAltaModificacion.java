@@ -9,11 +9,12 @@ import javax.swing.JFrame;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
 
 import TP_Fatal_Final.dao.BComplejosHabitacionalesDAO;
 import TP_Fatal_Final.dao.BTrazadoFormalDAO;
 import TP_Fatal_Final.dao.BUrbanizacionPlanificadaDAO;
-import TP_Fatal_Final.dao.ComunaDAO; // 👈 Asegurate de tener este DAO o crearlo
+import TP_Fatal_Final.dao.ComunaDAO;
 import TP_Fatal_Final.modelo.Barrio;
 
 import TP_Fatal_Final.modelo.BTrazadoFormal;
@@ -25,11 +26,6 @@ import java.util.ArrayList;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.awt.event.ItemEvent;
 
 public class BarrioAltaModificacion extends JPanel {
@@ -50,6 +46,7 @@ public class BarrioAltaModificacion extends JPanel {
 	private JTextField txtLeyIntegracion;
 	private JCheckBox chkAguaPotable;
 	
+	// Componentes específicos: Complejos Habitacionales
 	private JLabel lblMonoblocks;
 	private JTextField txtMonoblocks;
 	private JCheckBox chkConsorcio;
@@ -174,6 +171,9 @@ public class BarrioAltaModificacion extends JPanel {
 		if (barrioAModificar != null) {
 			txtNombreBarrio.setText(barrioAModificar.getNombreBarrio());
 			txtSuperficie.setText(String.valueOf(barrioAModificar.getSuperficie()));
+			if (barrioAModificar.getComuna() != null) {
+				cbComuna.setSelectedItem(barrioAModificar.getComuna());
+			}
 		}
 
 		// Botón Volver
@@ -194,57 +194,68 @@ public class BarrioAltaModificacion extends JPanel {
 		btnGuardarModificar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String tipoSeleccionado = (String) cbTipoBarrio.getSelectedItem();
-				String comunaSeleccionada = (String) cbComuna.getSelectedItem(); // Obtenemos la comuna elegida
+				String comunaSeleccionada = (String) cbComuna.getSelectedItem(); 
 				
-				if ("Trazado Formal".equals(tipoSeleccionado)) {
-				    BTrazadoFormal btf = new BTrazadoFormal();
-				    btf.setNombreBarrio(txtNombreBarrio.getText());
-				    btf.setSuperficie(Integer.valueOf(txtSuperficie.getText()));
-				    btf.setCantidadDeEdificiosHorizontales(Integer.valueOf(txtEdificiosPH.getText()));
-				    btf.setPorAsfaltoEnCalles(Integer.valueOf(txtAsfalto.getText()));
-				    // btf.setComuna(comunaSeleccionada); // Asignar si tu modelo lo requiere
-				    
-				    BTrazadoFormalDAO dao = new BTrazadoFormalDAO();
-				    if (barrioAModificar == null) {
-				        dao.guardar(btf);
-				    } else {
-				        dao.actualizar(btf, barrioAModificar.getNombreBarrio());
-				    }
-				    
-				} else if ("Complejo Habitacional".equals(tipoSeleccionado)) {
-				    BComplejosHabitacionales bch = new BComplejosHabitacionales();
-				    bch.setNombreBarrio(txtNombreBarrio.getText());
-				    bch.setSuperficie(Integer.valueOf(txtSuperficie.getText()));
-				    bch.setCantidadDeMonoblocks(Integer.valueOf(txtMonoblocks.getText()));
-				    bch.setTieneAdministracionActiva(chkConsorcio.isSelected());
-				    // bch.setComuna(comunaSeleccionada);
-				    
-				    BComplejosHabitacionalesDAO dao = new BComplejosHabitacionalesDAO();
-				    if (barrioAModificar == null) {
-				        dao.guardar(bch);
-				    } else {
-				        dao.actualizar(bch, barrioAModificar.getNombreBarrio());
-				    }
-				    
-				} else if ("Urbanización Planificada".equals(tipoSeleccionado)) {
-				    BUrbanizacionPlanificada bup = new BUrbanizacionPlanificada();
-				    bup.setNombreBarrio(txtNombreBarrio.getText());
-				    bup.setSuperficie(Integer.valueOf(txtSuperficie.getText()));
-				    bup.setNumeroDeLey(Integer.valueOf(txtLeyIntegracion.getText()));
-				    bup.setTieneAguaPotable(chkAguaPotable.isSelected());
-				    // bup.setComuna(comunaSeleccionada);
-				    
-				    BUrbanizacionPlanificadaDAO dao = new BUrbanizacionPlanificadaDAO();
-				    if (barrioAModificar == null) {
-				        dao.guardar(bup);
-				    } else {
-				        dao.actualizar(bup, barrioAModificar.getNombreBarrio());
-				    }
+				// Validación básica de comuna
+				if (comunaSeleccionada == null || comunaSeleccionada.equals("Seleccione una comuna...")) {
+					JOptionPane.showMessageDialog(null, "Por favor, seleccione una comuna válida.");
+					return;
 				}
+				
+				try {
+					if ("Trazado Formal".equals(tipoSeleccionado)) {
+					    BTrazadoFormal btf = new BTrazadoFormal();
+					    btf.setNombreBarrio(txtNombreBarrio.getText());
+					    btf.setSuperficie(Integer.valueOf(txtSuperficie.getText()));
+					    btf.setCantidadDeEdificiosHorizontales(Integer.valueOf(txtEdificiosPH.getText()));
+					    btf.setPorAsfaltoEnCalles(Integer.valueOf(txtAsfalto.getText()));
+					    btf.setComuna(comunaSeleccionada);
+					    
+					    BTrazadoFormalDAO dao = new BTrazadoFormalDAO();
+					    if (barrioAModificar == null) {
+					        dao.guardar(btf);
+					    } else {
+					        dao.actualizar(btf, barrioAModificar.getNombreBarrio());
+					    }
+					    
+					} else if ("Complejo Habitacional".equals(tipoSeleccionado)) {
+					    BComplejosHabitacionales bch = new BComplejosHabitacionales();
+					    bch.setNombreBarrio(txtNombreBarrio.getText());
+					    bch.setSuperficie(Integer.valueOf(txtSuperficie.getText()));
+					    bch.setCantidadDeMonoblocks(Integer.valueOf(txtMonoblocks.getText()));
+					    bch.setTieneAdministracionActiva(chkConsorcio.isSelected());
+					    bch.setComuna(comunaSeleccionada);
+					    
+					    BComplejosHabitacionalesDAO dao = new BComplejosHabitacionalesDAO();
+					    if (barrioAModificar == null) {
+					        dao.guardar(bch);
+					    } else {
+					        dao.actualizar(bch, barrioAModificar.getNombreBarrio());
+					    }
+					    
+					} else if ("Urbanización Planificada".equals(tipoSeleccionado)) {
+					    BUrbanizacionPlanificada bup = new BUrbanizacionPlanificada();
+					    bup.setNombreBarrio(txtNombreBarrio.getText());
+					    bup.setSuperficie(Integer.valueOf(txtSuperficie.getText()));
+					    bup.setNumeroDeLey(Integer.valueOf(txtLeyIntegracion.getText()));
+					    bup.setTieneAguaPotable(chkAguaPotable.isSelected());
+					    bup.setComuna(comunaSeleccionada);
+					    
+					    BUrbanizacionPlanificadaDAO dao = new BUrbanizacionPlanificadaDAO();
+					    if (barrioAModificar == null) {
+					        dao.guardar(bup);
+					    } else {
+					        dao.actualizar(bup, barrioAModificar.getNombreBarrio());
+					    }
+					}
 
-				JFrame marco = (JFrame) SwingUtilities.getWindowAncestor((Component) e.getSource());
-				marco.setContentPane(new BarrioConsulta());
-				marco.validate();
+					JFrame marco = (JFrame) SwingUtilities.getWindowAncestor((Component) e.getSource());
+					marco.setContentPane(new BarrioConsulta());
+					marco.validate();
+					
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(null, "Por favor, ingrese valores numéricos válidos en los campos correspondientes.");
+				}
 			}
 		});
 		btnGuardarModificar.setBounds(90, 301, 90, 25);
@@ -253,11 +264,8 @@ public class BarrioAltaModificacion extends JPanel {
 		actualizarCamposDinamicos();
 	}
 
-	/**
-	 * Método para hacer el SELECT de las comunas y cargarlas en el JComboBox
-	 */
 	private void cargarComunas() {
-		ComunaDAO comunaDao = new ComunaDAO(); // Asegurate de tener este DAO implementado
+		ComunaDAO comunaDao = new ComunaDAO(); 
 		ArrayList<String> listaComunas = comunaDao.traerNombresComunas();
 		
 		cbComuna.addItem("Seleccione una comuna...");
@@ -268,13 +276,9 @@ public class BarrioAltaModificacion extends JPanel {
 		}
 	}
 
-	/**
-	 * Muestra u oculta los componentes visuales según el tipo de barrio elegido.
-	 */
 	private void actualizarCamposDinamicos() {
 		String tipoSeleccionado = (String) cbTipoBarrio.getSelectedItem();
 
-		// Ocultar todos los campos específicos por defecto
 		lblEdificiosPH.setVisible(false);
 		txtEdificiosPH.setVisible(false);
 		lblAsfalto.setVisible(false);
@@ -288,7 +292,6 @@ public class BarrioAltaModificacion extends JPanel {
 		txtMonoblocks.setVisible(false);
 		chkConsorcio.setVisible(false);
 
-		// Mostrar únicamente los correspondientes a la selección
 		if ("Trazado Formal".equals(tipoSeleccionado)) {
 			lblEdificiosPH.setVisible(true);
 			txtEdificiosPH.setVisible(true);

@@ -23,14 +23,15 @@ public class BTrazadoFormalDAO {
 		int filasAfectadas = 0;
 		try {
 			c = DriverManager.getConnection(URL, USR, PSS);
-			String sql = "INSERT INTO `barrio` (`nombreBarrio`,`superficie`,`Cantidad_EdificiosPh`,`Porcentaje_Asfalto`) "
-					+ "VALUES (?,?,?,?);";
+			String sql = "INSERT INTO `barrio` (`nombreBarrio`,`superficie`,`Cantidad_EdificiosPh`,`Porcentaje_Asfalto`, `fk_comuna`) "
+					+ "VALUES (?,?,?,?,?);";
 			PreparedStatement stmt = c.prepareStatement(sql);
 			stmt.setString(1, B.getNombreBarrio());
 			stmt.setInt(2, B.getSuperficie()); 
 			stmt.setInt(3, B.getCantidadDeEdificiosHorizontales()); 
 			stmt.setInt(4, B.getPorAsfaltoEnCalles());
-
+			stmt.setString(5, B.getComuna());
+			
 			filasAfectadas = stmt.executeUpdate();
 
 		} catch (SQLIntegrityConstraintViolationException e) {
@@ -71,14 +72,15 @@ public class BTrazadoFormalDAO {
 		int filasAfectadas = 0;
 		try {
 			c = DriverManager.getConnection(URL, USR, PSS);
-			String sql = "UPDATE barrio SET `nombreBarrio` = ?, `superficie` = ?, `Cantidad_EdificiosPh` = ?, `Porcentaje_Asfalto` = ? "
+			String sql = "UPDATE barrio SET `nombreBarrio` = ?, `superficie` = ?, `Cantidad_EdificiosPh` = ?, `Porcentaje_Asfalto` = ?, `fk_comuna` = ? "
 					+ "WHERE `nombreBarrio` = ?;";
 			PreparedStatement stmt = c.prepareStatement(sql);
 			stmt.setString(1, B.getNombreBarrio());
 			stmt.setInt(2, B.getSuperficie());
 			stmt.setInt(3, B.getCantidadDeEdificiosHorizontales());
 			stmt.setInt(4, B.getPorAsfaltoEnCalles());
-			stmt.setString(5, nombreActual);
+			stmt.setString(5, B.getComuna());
+			stmt.setString(6, nombreActual);
 
 			filasAfectadas = stmt.executeUpdate();
 
@@ -97,7 +99,7 @@ public class BTrazadoFormalDAO {
 		Connection c = null;
 		try {
 			c = DriverManager.getConnection(URL, USR, PSS);
-			String sql = "SELECT nombreBarrio, superficie, Cantidad_EdificiosPh, Porcentaje_Asfalto FROM barrio WHERE Cantidad_EdificiosPh IS NOT NULL";
+			String sql = "SELECT nombreBarrio, superficie, Cantidad_EdificiosPh, Porcentaje_Asfalto, fk_comuna FROM barrio WHERE Cantidad_EdificiosPh IS NOT NULL";
 			Statement stmt = c.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
 
@@ -108,9 +110,9 @@ public class BTrazadoFormalDAO {
 				unBarrio.setSuperficie(rs.getInt("superficie"));
 				unBarrio.setCantidadDeEdificiosHorizontales(rs.getInt("Cantidad_EdificiosPh"));
 				unBarrio.setPorAsfaltoEnCalles(rs.getInt("Porcentaje_Asfalto"));
+				unBarrio.setComuna(rs.getString("fk_comuna"));
 
 				Barrios.add(unBarrio);
-				
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -127,7 +129,7 @@ public class BTrazadoFormalDAO {
 		Connection c = null;
 		try {
 			c = DriverManager.getConnection(URL, USR, PSS);
-			String sql = "SELECT nombreBarrio, superficie, Cantidad_EdificiosPh, Porcentaje_Asfalto FROM barrio WHERE nombreBarrio = ?";
+			String sql = "SELECT nombreBarrio, superficie, Cantidad_EdificiosPh, Porcentaje_Asfalto, fk_comuna FROM barrio WHERE nombreBarrio = ?";
 			PreparedStatement stmt = c.prepareStatement(sql);
 			stmt.setString(1, nombreBarrio);
 			ResultSet rs = stmt.executeQuery();
@@ -138,6 +140,7 @@ public class BTrazadoFormalDAO {
 				Barrio.setSuperficie(rs.getInt("superficie"));
 				Barrio.setCantidadDeEdificiosHorizontales(rs.getInt("Cantidad_EdificiosPh"));
 				Barrio.setPorAsfaltoEnCalles(rs.getInt("Porcentaje_Asfalto"));
+				Barrio.setComuna(rs.getString("fk_comuna"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

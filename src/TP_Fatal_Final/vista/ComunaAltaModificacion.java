@@ -50,12 +50,12 @@ public class ComunaAltaModificacion extends JPanel {
 		add(txtNombreDeSede);
 		txtNombreDeSede.setColumns(10);
 
-		JLabel lblNewLabel = new JLabel("Número de comuna");
+		JLabel lblNewLabel = new JLabel("Nombre de sede");
 		lblNewLabel.setBounds(12, 59, 135, 14);
 		add(lblNewLabel);
 
 
-		JLabel lblNewLabel_1 = new JLabel("Nombre de sede");
+		JLabel lblNewLabel_1 = new JLabel("Número de comuna");
 		lblNewLabel_1.setBounds(12, 87, 135, 14);
 		add(lblNewLabel_1);
 

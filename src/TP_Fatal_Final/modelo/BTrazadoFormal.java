@@ -15,13 +15,13 @@ public class BTrazadoFormal extends Barrio {
 		// TODO Auto-generated constructor stub
 	}
 
-	public BTrazadoFormal(String nombreBarrio, int superficie, int numeroBarrio) {
-		super(nombreBarrio, superficie, numeroBarrio);
+	public BTrazadoFormal(String nombreBarrio, int superficie, int numeroBarrio, String comuna) {
+		super(nombreBarrio, superficie, numeroBarrio, comuna);
 		// TODO Auto-generated constructor stub
 	}
 
-	public BTrazadoFormal(String nombreBarrio, int superficie, int cantidadDeEdificiosHorizontales, int porAsfaltoEnCalles, ArrayList<Persona> personas, int numeroBarrio) {
-		super(nombreBarrio, superficie, numeroBarrio );
+	public BTrazadoFormal(String nombreBarrio, int superficie, int cantidadDeEdificiosHorizontales, int porAsfaltoEnCalles, ArrayList<Persona> personas, int numeroBarrio, String comuna) {
+		super(nombreBarrio, superficie, numeroBarrio, comuna);
 		this.cantidadDeEdificiosHorizontales = cantidadDeEdificiosHorizontales;
 		this.porAsfaltoEnCalles = porAsfaltoEnCalles;
 

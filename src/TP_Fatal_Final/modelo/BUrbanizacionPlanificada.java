@@ -15,8 +15,8 @@ public class BUrbanizacionPlanificada extends Barrio {
 			// TODO Auto-generated constructor stub
 		}
 
-		public BUrbanizacionPlanificada(String nombreBarrio, int superficie, int numeroBarrio) {
-			super(nombreBarrio, superficie, numeroBarrio);
+		public BUrbanizacionPlanificada(String nombreBarrio, int superficie, int numeroBarrio, String comuna) {
+			super(nombreBarrio, superficie, numeroBarrio, comuna);
 			// TODO Auto-generated constructor stub
 		}
 		

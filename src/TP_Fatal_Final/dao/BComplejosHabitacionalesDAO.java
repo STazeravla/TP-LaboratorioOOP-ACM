@@ -11,7 +11,6 @@ import java.util.ArrayList;
 
 import TP_Fatal_Final.modelo.Barrio;
 import TP_Fatal_Final.modelo.BComplejosHabitacionales;
-import TP_Fatal_Final.modelo.BTrazadoFormal;
 
 public class BComplejosHabitacionalesDAO {
 	private final static String URL = "jdbc:mysql://127.0.0.1:3306/bd_fatal_final";
@@ -23,14 +22,15 @@ public class BComplejosHabitacionalesDAO {
 		int filasAfectadas = 0;
 		try {
 			c = DriverManager.getConnection(URL, USR, PSS);
-			String sql = "INSERT INTO `barrio` (`nombreBarrio`,`superficie`,`Consorcio_Activo`,`Cantidad_Monoblocks`) "
-					+ "VALUES (?,?,?,?);";
+			String sql = "INSERT INTO `barrio` (`nombreBarrio`,`superficie`,`Consorcio_Activo`,`Cantidad_Monoblocks`, `fk_comuna`) "
+					+ "VALUES (?,?,?,?,?);";
 			PreparedStatement stmt = c.prepareStatement(sql);
 			stmt.setString(1, B.getNombreBarrio());
 			stmt.setInt(2, B.getSuperficie());
 			stmt.setBoolean(3, B.isTieneAdministracionActiva());
 			stmt.setInt(4, B.getCantidadDeMonoblocks());
-
+			stmt.setString(5, B.getComuna());
+			
 			filasAfectadas = stmt.executeUpdate();
 
 		} catch (SQLIntegrityConstraintViolationException e) {
@@ -71,14 +71,15 @@ public class BComplejosHabitacionalesDAO {
 		int filasAfectadas = 0;
 		try {
 			c = DriverManager.getConnection(URL, USR, PSS);
-			String sql = "UPDATE barrio SET `nombreBarrio` = ?, `superficie` = ?, `Consorcio_Activo` = ?, `Cantidad_Monoblocks` = ? "
+			String sql = "UPDATE barrio SET `nombreBarrio` = ?, `superficie` = ?, `Consorcio_Activo` = ?, `Cantidad_Monoblocks` = ?, `fk_comuna` = ? "
 					+ "WHERE `nombreBarrio` = ?;";
 			PreparedStatement stmt = c.prepareStatement(sql);
 			stmt.setString(1, B.getNombreBarrio());
 			stmt.setInt(2, B.getSuperficie());
 			stmt.setBoolean(3, B.isTieneAdministracionActiva());
 			stmt.setInt(4, B.getCantidadDeMonoblocks());
-			stmt.setString(5, nombreActual);
+			stmt.setString(5, B.getComuna());
+			stmt.setString(6, nombreActual);
 
 			filasAfectadas = stmt.executeUpdate();
 
@@ -97,18 +98,18 @@ public class BComplejosHabitacionalesDAO {
 		Connection c = null;
 		try {
 			c = DriverManager.getConnection(URL, USR, PSS);
-			String sql = "SELECT nombreBarrio, superficie, Consorcio_Activo, Cantidad_Monoblocks FROM barrio WHERE Cantidad_Monoblocks IS NOT NULL";
+			String sql = "SELECT nombreBarrio, superficie, Consorcio_Activo, Cantidad_Monoblocks, fk_comuna FROM barrio WHERE Cantidad_Monoblocks IS NOT NULL";
 			Statement stmt = c.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
 
 			while (rs.next()) {
 				BComplejosHabitacionales unBarrio = new BComplejosHabitacionales();
 				
-				
 				unBarrio.setNombreBarrio(rs.getString("nombreBarrio"));
 				unBarrio.setSuperficie(rs.getInt("superficie"));
 				unBarrio.setTieneAdministracionActiva(rs.getBoolean("Consorcio_Activo"));
 				unBarrio.setCantidadDeMonoblocks(rs.getInt("Cantidad_Monoblocks"));
+				unBarrio.setComuna(rs.getString("fk_comuna"));
 
 				Barrios.add(unBarrio);
 			}
@@ -127,7 +128,7 @@ public class BComplejosHabitacionalesDAO {
 		Connection c = null;
 		try {
 			c = DriverManager.getConnection(URL, USR, PSS);
-			String sql = "SELECT nombreBarrio, superficie, Consorcio_Activo, Cantidad_Monoblocks FROM barrio WHERE nombreBarrio = ?";
+			String sql = "SELECT nombreBarrio, superficie, Consorcio_Activo, Cantidad_Monoblocks, fk_comuna FROM barrio WHERE nombreBarrio = ?";
 			PreparedStatement stmt = c.prepareStatement(sql);
 			stmt.setString(1, nombreBarrio);
 			ResultSet rs = stmt.executeQuery();
@@ -138,6 +139,7 @@ public class BComplejosHabitacionalesDAO {
 				Barrio.setSuperficie(rs.getInt("superficie"));
 				Barrio.setTieneAdministracionActiva(rs.getBoolean("Consorcio_Activo"));
 				Barrio.setCantidadDeMonoblocks(rs.getInt("Cantidad_Monoblocks"));
+				Barrio.setComuna(rs.getString("fk_comuna"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

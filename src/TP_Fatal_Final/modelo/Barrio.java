@@ -11,6 +11,7 @@ public abstract class Barrio {
 	private int superficie;
 	private int numeroBarrio;
 	private String tipoDeBarrio;
+	private String comuna;
 	
 	private ArrayList<Persona> personas = new ArrayList<>();
 	
@@ -19,11 +20,12 @@ public abstract class Barrio {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Barrio(String nombreBarrio, int superficie, int numeroBarrio) {
+	public Barrio(String nombreBarrio, int superficie, int numeroBarrio, String comuna) {
 		super();
 		this.numeroBarrio= numeroBarrio;
 		this.nombreBarrio = nombreBarrio;
 		this.superficie = superficie;
+		this.comuna = comuna;
 	}
 
 	public String getNombreBarrio() {
@@ -63,5 +65,13 @@ public abstract class Barrio {
 
 	public void setTipoDeBarrio(String tipoDeBarrio) {
 		this.tipoDeBarrio = tipoDeBarrio;
+	}
+
+	public final String getComuna() {
+		return comuna;
+	}
+
+	public final void setComuna(String comuna) {
+		this.comuna = comuna;
 	}
 }

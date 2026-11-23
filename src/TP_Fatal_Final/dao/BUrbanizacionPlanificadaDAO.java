@@ -14,7 +14,7 @@ import TP_Fatal_Final.modelo.BUrbanizacionPlanificada;
 
 public class BUrbanizacionPlanificadaDAO {
 
-    private final static String URL = "jdbc:mysql://127.0.0.1:3306/bd_fatal_final";
+	private final static String URL = "jdbc:mysql://127.0.0.1:3306/bd_fatal_final";
 	private final static String USR = "root";
 	private final static String PSS = "admin";
 
@@ -23,19 +23,17 @@ public class BUrbanizacionPlanificadaDAO {
 		int filasAfectadas = 0;
 		try {
 			c = DriverManager.getConnection(URL, USR, PSS); 
-			String sql = "INSERT INTO `barrio` (`nombreBarrio`,`superficie`,`Conexion_Agua`,`Ley_Integracion`) "
-					+ "VALUES (?,?,?,?)";
+			String sql = "INSERT INTO `barrio` (`nombreBarrio`,`superficie`,`Conexion_Agua`,`Ley_Integracion`, `fk_comuna`) "
+					+ "VALUES (?,?,?,?,?)";
 			
-				PreparedStatement stmt = c.prepareStatement(sql); 
-				stmt.setString(1, B.getNombreBarrio());
-				stmt.setInt(2, B.getSuperficie());
-				stmt.setBoolean(3, B.isTieneAguaPotable());
-				stmt.setInt(4, B.getNumeroDeLey());
-				filasAfectadas = stmt.executeUpdate();
+			PreparedStatement stmt = c.prepareStatement(sql); 
+			stmt.setString(1, B.getNombreBarrio());
+			stmt.setInt(2, B.getSuperficie());
+			stmt.setBoolean(3, B.isTieneAguaPotable());
+			stmt.setInt(4, B.getNumeroDeLey());
+			stmt.setString(5, B.getComuna());
 			
-			
-
-			
+			filasAfectadas = stmt.executeUpdate();
 
 		} catch (SQLIntegrityConstraintViolationException e) {
 			e.printStackTrace();
@@ -75,14 +73,15 @@ public class BUrbanizacionPlanificadaDAO {
 		int filasAfectadas = 0;
 		try {
 			c = DriverManager.getConnection(URL, USR, PSS);
-			String sql = "UPDATE barrio SET `nombreBarrio` = ?, `superficie` = ?, `Conexion_Agua` = ?, `Ley_Integracion` = ? "
+			String sql = "UPDATE barrio SET `nombreBarrio` = ?, `superficie` = ?, `Conexion_Agua` = ?, `Ley_Integracion` = ?, `fk_comuna` = ? "
 					+ "WHERE `nombreBarrio` = ?;";
 			PreparedStatement stmt = c.prepareStatement(sql);
 			stmt.setString(1, B.getNombreBarrio());
 			stmt.setInt(2, B.getSuperficie());
 			stmt.setBoolean(3, B.isTieneAguaPotable());
 			stmt.setInt(4, B.getNumeroDeLey());
-			stmt.setString(5, nombreActual);
+			stmt.setString(5, B.getComuna());
+			stmt.setString(6, nombreActual);
 
 			filasAfectadas = stmt.executeUpdate();
 
@@ -101,22 +100,21 @@ public class BUrbanizacionPlanificadaDAO {
 		Connection c = null;
 		try {
 			c = DriverManager.getConnection(URL, USR, PSS);
-			String sql = "SELECT nombreBarrio, superficie, Conexion_Agua, Ley_Integracion FROM barrio WHERE Ley_Integracion IS NOT NULL";
+			String sql = "SELECT nombreBarrio, superficie, Conexion_Agua, Ley_Integracion, fk_comuna FROM barrio WHERE Ley_Integracion IS NOT NULL";
 			Statement stmt = c.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
 
 			while (rs.next()) {
 				BUrbanizacionPlanificada unBarrio = new BUrbanizacionPlanificada();
 				
-					unBarrio.setNombreBarrio(rs.getString("nombreBarrio"));
-					unBarrio.setSuperficie(rs.getInt("superficie"));
-					unBarrio.setTieneAguaPotable(rs.getBoolean("Conexion_Agua"));
-					unBarrio.setNumeroDeLey(rs.getInt("Ley_Integracion"));
+				unBarrio.setNombreBarrio(rs.getString("nombreBarrio"));
+				unBarrio.setSuperficie(rs.getInt("superficie"));
+				unBarrio.setTieneAguaPotable(rs.getBoolean("Conexion_Agua"));
+				unBarrio.setNumeroDeLey(rs.getInt("Ley_Integracion"));
+				unBarrio.setComuna(rs.getString("fk_comuna"));
 
-					Barrios.add(unBarrio);
-				}
-				
-			
+				Barrios.add(unBarrio);
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -132,7 +130,7 @@ public class BUrbanizacionPlanificadaDAO {
 		Connection c = null;
 		try {
 			c = DriverManager.getConnection(URL, USR, PSS);
-			String sql = "SELECT nombreBarrio, superficie, Conexion_Agua, Ley_Integracion FROM barrio WHERE nombreBarrio = ?";
+			String sql = "SELECT nombreBarrio, superficie, Conexion_Agua, Ley_Integracion, fk_comuna FROM barrio WHERE nombreBarrio = ?";
 			PreparedStatement stmt = c.prepareStatement(sql);
 			stmt.setString(1, nombreBarrio);
 			ResultSet rs = stmt.executeQuery();
@@ -143,6 +141,7 @@ public class BUrbanizacionPlanificadaDAO {
 				Barrio.setSuperficie(rs.getInt("superficie"));
 				Barrio.setTieneAguaPotable(rs.getBoolean("Conexion_Agua"));
 				Barrio.setNumeroDeLey(rs.getInt("Ley_Integracion"));
+				Barrio.setComuna(rs.getString("fk_comuna"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

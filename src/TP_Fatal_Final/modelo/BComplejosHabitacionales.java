@@ -12,8 +12,8 @@ public class BComplejosHabitacionales extends Barrio {
 		// TODO Auto-generated constructor stub
 	}
 
-	public BComplejosHabitacionales(String nombreBarrio, int superficie, int numeroBarrio) {
-		super(nombreBarrio, superficie, numeroBarrio);
+	public BComplejosHabitacionales(String nombreBarrio, int superficie, int numeroBarrio, String comuna) {
+		super(nombreBarrio, superficie, numeroBarrio, comuna);
 		// TODO Auto-generated constructor stub
 	}
 	
