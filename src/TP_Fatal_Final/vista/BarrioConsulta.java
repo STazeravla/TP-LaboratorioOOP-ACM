@@ -160,6 +160,18 @@ public class BarrioConsulta extends JPanel {
 		});
 		btnEliminar.setBounds(500, 131, 115, 23);
 		add(btnEliminar);
+		
+		JButton btnNewButton = new JButton("Volver");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(BarrioConsulta.this);
+				frame.setContentPane(new MenuVista());
+				frame.revalidate();
+		        frame.repaint();
+			}
+		});
+		btnNewButton.setBounds(500, 165, 115, 23);
+		add(btnNewButton);
 	}
 
 	private void agregarFilasDesdeLista(ArrayList<Barrio> listaBarrios, String tipoBarrio) {

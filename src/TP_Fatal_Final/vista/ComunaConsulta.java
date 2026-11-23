@@ -85,6 +85,18 @@ public class ComunaConsulta extends JPanel {
 		});
 		btnModificcar.setBounds(400, 97, 103, 23);
 		add(btnModificcar);
+		
+		JButton btnNewButton = new JButton("Volver");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(ComunaConsulta.this);
+				frame.setContentPane(new MenuVista());
+				frame.revalidate();
+		        frame.repaint();
+			}
+		});
+		btnNewButton.setBounds(400, 131, 103, 23);
+		add(btnNewButton);
 
 	}
 
