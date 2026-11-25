@@ -18,20 +18,6 @@ CREATE SCHEMA IF NOT EXISTS `bd_fatal_final` DEFAULT CHARACTER SET utf8mb4 COLLA
 USE `bd_fatal_final` ;
 
 -- -----------------------------------------------------
--- Table `bd_fatal_final`.`comuna`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bd_fatal_final`.`comuna` (
-  `Nombre_Sede` VARCHAR(45) NOT NULL,
-  `Numero_Comuna` INT NOT NULL,
-  `Cantidad_Barrios` INT NOT NULL,
-  `id_comuna` INT NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`id_comuna`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
 -- Table `bd_fatal_final`.`barrio`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bd_fatal_final`.`barrio` (
@@ -41,17 +27,31 @@ CREATE TABLE IF NOT EXISTS `bd_fatal_final`.`barrio` (
   `Cantidad_EdificiosPh` INT NULL DEFAULT NULL,
   `Conexion_Agua` BIT(1) NULL DEFAULT NULL,
   `Ley_Integracion` VARCHAR(45) NULL DEFAULT NULL,
-  `Consorsio_Activo` BIT(1) NULL DEFAULT NULL,
+  `Consorcio_Activo` BIT(1) NULL DEFAULT NULL,
   `Cantidad_Monoblocks` INT NULL DEFAULT NULL,
-  `fk_comuna` INT NOT NULL,
-  `fk_Persona` INT NOT NULL,
+  `tiene_museo` BIT(1) NULL DEFAULT NULL,
+  `fk_comuna` VARCHAR(45) NOT NULL,
+  `fk_Persona` INT NULL DEFAULT NULL,
   `id_barrio` INT NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id_barrio`),
-  INDEX `id_comuna_idx` (`fk_comuna` ASC) VISIBLE,
-  CONSTRAINT `id_comuna`
-    FOREIGN KEY (`fk_comuna`)
-    REFERENCES `bd_fatal_final`.`comuna` (`id_comuna`))
+  INDEX `id_comuna_idx` (`fk_comuna` ASC) VISIBLE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 10
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `bd_fatal_final`.`comuna`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `bd_fatal_final`.`comuna` (
+  `Nombre_Sede` VARCHAR(45) NOT NULL,
+  `Numero_Comuna` INT NOT NULL,
+  `Cantidad_Barrios` INT NOT NULL,
+  `id_comuna` INT NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id_comuna`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 3
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
